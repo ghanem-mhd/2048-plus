@@ -15,6 +15,11 @@
 		FCABEB6B23B828270055A559 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FCABEB6923B828270055A559 /* LaunchScreen.storyboard */; };
 		FCABEB7723B830F90055A559 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCABEB7623B830F90055A559 /* Grid.swift */; };
 		FCABEB7923B8359A0055A559 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCABEB7823B8359A0055A559 /* Colors.swift */; };
+		FCABEB7D23BE563E0055A559 /* Tile.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCABEB7C23BE563E0055A559 /* Tile.swift */; };
+		FCABEB7F23BE568B0055A559 /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCABEB7E23BE568B0055A559 /* Position.swift */; };
+		FCABEB8223BFF6160055A559 /* GameScenceControlDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCABEB8023BFEF7A0055A559 /* GameScenceControlDelegate.swift */; };
+		FCABEB8523BFF7830055A559 /* TouchInputManger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCABEB8423BFF7830055A559 /* TouchInputManger.swift */; };
+		FCABEB8723C0034B0055A559 /* VoiceInputManger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCABEB8623C0034B0055A559 /* VoiceInputManger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +33,11 @@
 		FCABEB6C23B828270055A559 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FCABEB7623B830F90055A559 /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
 		FCABEB7823B8359A0055A559 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		FCABEB7C23BE563E0055A559 /* Tile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tile.swift; sourceTree = "<group>"; };
+		FCABEB7E23BE568B0055A559 /* Position.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Position.swift; sourceTree = "<group>"; };
+		FCABEB8023BFEF7A0055A559 /* GameScenceControlDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScenceControlDelegate.swift; sourceTree = "<group>"; };
+		FCABEB8423BFF7830055A559 /* TouchInputManger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchInputManger.swift; sourceTree = "<group>"; };
+		FCABEB8623C0034B0055A559 /* VoiceInputManger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceInputManger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +70,8 @@
 		FCABEB5923B828200055A559 /* 2048-plus */ = {
 			isa = PBXGroup;
 			children = (
+				FCABEB8323BFF75F0055A559 /* Input */,
+				FCABEB7B23BE56220055A559 /* Models */,
 				FCABEB6C23B828270055A559 /* Info.plist */,
 				FCABEB7523B82CA10055A559 /* Template */,
 				FCABEB7423B82C630055A559 /* Assets */,
@@ -83,6 +95,7 @@
 				FCABEB6023B828200055A559 /* GameScene.swift */,
 				FCABEB7623B830F90055A559 /* Grid.swift */,
 				FCABEB7823B8359A0055A559 /* Colors.swift */,
+				FCABEB8023BFEF7A0055A559 /* GameScenceControlDelegate.swift */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -103,6 +116,24 @@
 				FCABEB5A23B828200055A559 /* AppDelegate.swift */,
 			);
 			path = Template;
+			sourceTree = "<group>";
+		};
+		FCABEB7B23BE56220055A559 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				FCABEB7C23BE563E0055A559 /* Tile.swift */,
+				FCABEB7E23BE568B0055A559 /* Position.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		FCABEB8323BFF75F0055A559 /* Input */ = {
+			isa = PBXGroup;
+			children = (
+				FCABEB8423BFF7830055A559 /* TouchInputManger.swift */,
+				FCABEB8623C0034B0055A559 /* VoiceInputManger.swift */,
+			);
+			path = Input;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -176,10 +207,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FCABEB7F23BE568B0055A559 /* Position.swift in Sources */,
+				FCABEB8223BFF6160055A559 /* GameScenceControlDelegate.swift in Sources */,
 				FCABEB6123B828200055A559 /* GameScene.swift in Sources */,
+				FCABEB8723C0034B0055A559 /* VoiceInputManger.swift in Sources */,
 				FCABEB7923B8359A0055A559 /* Colors.swift in Sources */,
 				FCABEB6323B828200055A559 /* GameViewController.swift in Sources */,
+				FCABEB7D23BE563E0055A559 /* Tile.swift in Sources */,
 				FCABEB5B23B828200055A559 /* AppDelegate.swift in Sources */,
+				FCABEB8523BFF7830055A559 /* TouchInputManger.swift in Sources */,
 				FCABEB7723B830F90055A559 /* Grid.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -327,6 +363,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7D6V6TM4RZ;
 				INFOPLIST_FILE = "2048-plus/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -345,6 +382,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 7D6V6TM4RZ;
 				INFOPLIST_FILE = "2048-plus/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
