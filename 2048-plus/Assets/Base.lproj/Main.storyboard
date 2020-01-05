@@ -12,24 +12,36 @@
         <scene sceneID="tXr-a1-R10">
             <objects>
                 <viewController id="BV1-FR-VrT" customClass="GameViewController" customModule="_048_plus" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" multipleTouchEnabled="YES" contentMode="scaleToFill" id="3se-qz-xqx" customClass="SKView">
+                    <view key="view" contentMode="scaleToFill" id="kJ9-KS-HKj">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="90e-vS-l8U">
-                                <rect key="frame" x="172" y="426" width="70" height="45"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Recording"/>
+                            <skView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZYP-ZJ-CDk">
+                                <rect key="frame" x="0.0" y="44" width="414" height="734"/>
+                            </skView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="co3-SA-vE3">
+                                <rect key="frame" x="173.5" y="802" width="67" height="36"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <state key="normal" title="Play 🎤"/>
                                 <connections>
-                                    <action selector="test:" destination="BV1-FR-VrT" eventType="touchUpInside" id="6fo-WQ-O47"/>
+                                    <action selector="test:" destination="BV1-FR-VrT" eventType="touchUpInside" id="TEv-6i-RXs"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <viewLayoutGuide key="safeArea" id="4qk-I5-YsI"/>
+                        <constraints>
+                            <constraint firstItem="ZYP-ZJ-CDk" firstAttribute="leading" secondItem="khF-i0-1tM" secondAttribute="leading" id="AYz-Sw-hxO"/>
+                            <constraint firstItem="ZYP-ZJ-CDk" firstAttribute="centerX" secondItem="kJ9-KS-HKj" secondAttribute="centerX" id="AmF-Jw-C0Y"/>
+                            <constraint firstItem="ZYP-ZJ-CDk" firstAttribute="centerX" secondItem="co3-SA-vE3" secondAttribute="centerX" id="G7B-FU-5oB"/>
+                            <constraint firstItem="khF-i0-1tM" firstAttribute="bottom" secondItem="co3-SA-vE3" secondAttribute="bottom" constant="24" id="kFT-Ag-p6W"/>
+                            <constraint firstItem="co3-SA-vE3" firstAttribute="top" secondItem="ZYP-ZJ-CDk" secondAttribute="bottom" constant="24" id="reX-Ov-kWp"/>
+                            <constraint firstItem="ZYP-ZJ-CDk" firstAttribute="top" secondItem="khF-i0-1tM" secondAttribute="top" id="uZa-bv-Qk0"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="khF-i0-1tM"/>
                     </view>
                     <connections>
-                        <outlet property="recordButton" destination="90e-vS-l8U" id="wFb-iF-K5w"/>
+                        <outlet property="recordButton" destination="co3-SA-vE3" id="HFY-r3-F8j"/>
+                        <outlet property="skview" destination="ZYP-ZJ-CDk" id="Es9-qc-SYR"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>

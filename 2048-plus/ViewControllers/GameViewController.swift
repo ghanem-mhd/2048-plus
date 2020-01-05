@@ -12,60 +12,51 @@ import Speech
 
 class GameViewController: UIViewController, SFSpeechRecognizerDelegate {
     
+    @IBOutlet weak var skview: SKView!
     @IBOutlet weak var recordButton: UIButton!
-    
     private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))!
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
     private let audioEngine = AVAudioEngine()
     
     
+    var voiceControlDeleget: GameScenceControlDelegate? = nil
+    
+    
+    var oldResult:String = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         recordButton.isEnabled = false
         
-        if let view = self.view as! SKView? {
-            // Load the SKScene from 'GameScene.sks'
-            let scene = GameScene(size: view.bounds.size)
-            // Set the scale mode to scale to fit the window
-            scene.scaleMode = .aspectFill
-            // Present the scene
-            view.presentScene(scene)
-            view.ignoresSiblingOrder = true
-            view.showsFPS = true
-            view.showsNodeCount = true
-        }
+        let scene = GameScene(size: skview.bounds.size)
+        voiceControlDeleget = scene
+        scene.scaleMode = .aspectFit
+        scene.backgroundColor = .black
+        skview.presentScene(scene)
+        skview.ignoresSiblingOrder = true
+        skview.showsFPS = true
+        skview.showsNodeCount = true
     }
     
     override public func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        // Configure the SFSpeechRecognizer object already
-        // stored in a local member variable.
         speechRecognizer.delegate = self
-        
-        // Asynchronously make the authorization request.
         SFSpeechRecognizer.requestAuthorization { authStatus in
-            
-            // Divert to the app's main thread so that the UI
-            // can be updated.
             OperationQueue.main.addOperation {
                 switch authStatus {
                 case .authorized:
                     self.recordButton.isEnabled = true
-                    
                 case .denied:
                     self.recordButton.isEnabled = false
                     self.recordButton.setTitle("User denied access to speech recognition", for: .disabled)
-                    
                 case .restricted:
                     self.recordButton.isEnabled = false
                     self.recordButton.setTitle("Speech recognition restricted on this device", for: .disabled)
-                    
                 case .notDetermined:
                     self.recordButton.isEnabled = false
                     self.recordButton.setTitle("Speech recognition not yet authorized", for: .disabled)
-                    
                 default:
                     self.recordButton.isEnabled = false
                 }
@@ -74,8 +65,6 @@ class GameViewController: UIViewController, SFSpeechRecognizerDelegate {
     }
     
     private func startRecording() throws {
-        
-        // Cancel the previous task if it's running.
         recognitionTask?.cancel()
         self.recognitionTask = nil
         
@@ -101,10 +90,43 @@ class GameViewController: UIViewController, SFSpeechRecognizerDelegate {
             var isFinal = false
             
             if let result = result {
-                // Update the text view with the results.
-                print(result.bestTranscription.formattedString)
+                let newResult: String = result.bestTranscription.formattedString
+                
+                var command = ""
+                
+                if self.oldResult == "" {
+                    self.oldResult = newResult.lowercased()
+                    command = self.oldResult
+                }else{
+                    let diff = newResult.lowercased().replacingOccurrences(of:self.oldResult.lowercased(),with:"")
+                    self.oldResult = newResult.lowercased()
+                    
+                    command = diff.trimmingCharacters(in: .whitespacesAndNewlines)
+                }
+                
+                if command == ""{
+                    print("Command is Empty")
+                }else{
+                    print("Command \(command)")
+                    
+                    if command == "left"{
+                        self.voiceControlDeleget!.shiftLeft()
+                    }
+                    
+                    if command == "right"{
+                        self.voiceControlDeleget!.shiftRight()
+                    }
+                    
+                    if command == "up"{
+                        self.voiceControlDeleget!.shiftUp()
+                    }
+                    
+                    if command == "down"{
+                        self.voiceControlDeleget!.shiftDown()
+                    }
+                }
+                
                 isFinal = result.isFinal
-                print("Text \(result.bestTranscription.formattedString)")
             }
             
             if error != nil || isFinal {
