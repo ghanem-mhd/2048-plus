@@ -10,14 +10,17 @@ import UIKit
 import SpriteKit
 import Speech
 
-class GameViewController: UIViewController, SFSpeechRecognizerDelegate {
+class GameViewController: UIHeadGazeViewController, SFSpeechRecognizerDelegate {
     
     @IBOutlet weak var skview: SKView!
+//    @IBOutlet weak var myButton: UIBubbleButton!
     @IBOutlet weak var recordButton: UIButton!
     private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))!
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
     private let audioEngine = AVAudioEngine()
+    
+    private var headGazeRecognizer: UIHeadGazeRecognizer? = nil
     
     
     var voiceControlDeleget: GameScenceControlDelegate? = nil
@@ -27,6 +30,8 @@ class GameViewController: UIViewController, SFSpeechRecognizerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setupGestureRecognizer()
         
         recordButton.isEnabled = false
         
@@ -38,6 +43,14 @@ class GameViewController: UIViewController, SFSpeechRecognizerDelegate {
         skview.ignoresSiblingOrder = true
         skview.showsFPS = true
         skview.showsNodeCount = true
+    }
+    
+    private func setupGestureRecognizer() {
+        self.headGazeRecognizer = UIHeadGazeRecognizer()
+
+        super.virtualCursorView?.smoothness = 9
+
+        super.virtualCursorView?.addGestureRecognizer(headGazeRecognizer)
     }
     
     override public func viewDidAppear(_ animated: Bool) {

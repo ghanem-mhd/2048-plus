@@ -7,6 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		50BD592623CBDA96008734D4 /* UIHeadGazeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BD591623CBD953008734D4 /* UIHeadGazeViewController.swift */; };
+		50BD592723CBDA96008734D4 /* UITrackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BD591723CBD953008734D4 /* UITrackButton.swift */; };
+		50BD592823CBDA96008734D4 /* UIHoverableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BD591823CBD953008734D4 /* UIHoverableButton.swift */; };
+		50BD592923CBDA96008734D4 /* UIHeadGazeEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BD591923CBD953008734D4 /* UIHeadGazeEvent.swift */; };
+		50BD592A23CBDA96008734D4 /* UIMultiFuncButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BD591A23CBD953008734D4 /* UIMultiFuncButton.swift */; };
+		50BD592B23CBDA96008734D4 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 50BD591B23CBD953008734D4 /* README.md */; };
+		50BD592C23CBDA96008734D4 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BD591D23CBD953008734D4 /* Throttler.swift */; };
+		50BD592D23CBDA96008734D4 /* MathUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BD591E23CBD953008734D4 /* MathUtility.swift */; };
+		50BD592E23CBDA96008734D4 /* ChargingThrottler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BD591F23CBD953008734D4 /* ChargingThrottler.swift */; };
+		50BD592F23CBDA96008734D4 /* UIVirtualCursorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BD592023CBD953008734D4 /* UIVirtualCursorView.swift */; };
+		50BD593023CBDA96008734D4 /* UIHeadGazeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BD592223CBD953008734D4 /* UIHeadGazeView.swift */; };
+		50BD593123CBDA96008734D4 /* UIBubbleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BD592323CBD953008734D4 /* UIBubbleButton.swift */; };
+		50BD593223CBDA96008734D4 /* UIHeadGazeRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BD592423CBD953008734D4 /* UIHeadGazeRecognizer.swift */; };
+		50BD593323CBDA96008734D4 /* UIHeadGazeViewControllerBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BD592523CBD953008734D4 /* UIHeadGazeViewControllerBase.swift */; };
 		FCABEB5B23B828200055A559 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCABEB5A23B828200055A559 /* AppDelegate.swift */; };
 		FCABEB6123B828200055A559 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCABEB6023B828200055A559 /* GameScene.swift */; };
 		FCABEB6323B828200055A559 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCABEB6223B828200055A559 /* GameViewController.swift */; };
@@ -23,6 +37,21 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		50BD591623CBD953008734D4 /* UIHeadGazeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIHeadGazeViewController.swift; sourceTree = "<group>"; };
+		50BD591723CBD953008734D4 /* UITrackButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITrackButton.swift; sourceTree = "<group>"; };
+		50BD591823CBD953008734D4 /* UIHoverableButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIHoverableButton.swift; sourceTree = "<group>"; };
+		50BD591923CBD953008734D4 /* UIHeadGazeEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIHeadGazeEvent.swift; sourceTree = "<group>"; };
+		50BD591A23CBD953008734D4 /* UIMultiFuncButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIMultiFuncButton.swift; sourceTree = "<group>"; };
+		50BD591B23CBD953008734D4 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		50BD591D23CBD953008734D4 /* Throttler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Throttler.swift; sourceTree = "<group>"; };
+		50BD591E23CBD953008734D4 /* MathUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathUtility.swift; sourceTree = "<group>"; };
+		50BD591F23CBD953008734D4 /* ChargingThrottler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChargingThrottler.swift; sourceTree = "<group>"; };
+		50BD592023CBD953008734D4 /* UIVirtualCursorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIVirtualCursorView.swift; sourceTree = "<group>"; };
+		50BD592123CBD953008734D4 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
+		50BD592223CBD953008734D4 /* UIHeadGazeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIHeadGazeView.swift; sourceTree = "<group>"; };
+		50BD592323CBD953008734D4 /* UIBubbleButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBubbleButton.swift; sourceTree = "<group>"; };
+		50BD592423CBD953008734D4 /* UIHeadGazeRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIHeadGazeRecognizer.swift; sourceTree = "<group>"; };
+		50BD592523CBD953008734D4 /* UIHeadGazeViewControllerBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIHeadGazeViewControllerBase.swift; sourceTree = "<group>"; };
 		FCABEB5723B828200055A559 /* 2048-plus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "2048-plus.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FCABEB5A23B828200055A559 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FCABEB6023B828200055A559 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -51,6 +80,36 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		50BD591523CBD953008734D4 /* HeadGazeLib */ = {
+			isa = PBXGroup;
+			children = (
+				50BD591623CBD953008734D4 /* UIHeadGazeViewController.swift */,
+				50BD591723CBD953008734D4 /* UITrackButton.swift */,
+				50BD591823CBD953008734D4 /* UIHoverableButton.swift */,
+				50BD591923CBD953008734D4 /* UIHeadGazeEvent.swift */,
+				50BD591A23CBD953008734D4 /* UIMultiFuncButton.swift */,
+				50BD591B23CBD953008734D4 /* README.md */,
+				50BD591C23CBD953008734D4 /* Utilities */,
+				50BD592023CBD953008734D4 /* UIVirtualCursorView.swift */,
+				50BD592123CBD953008734D4 /* logo.png */,
+				50BD592223CBD953008734D4 /* UIHeadGazeView.swift */,
+				50BD592323CBD953008734D4 /* UIBubbleButton.swift */,
+				50BD592423CBD953008734D4 /* UIHeadGazeRecognizer.swift */,
+				50BD592523CBD953008734D4 /* UIHeadGazeViewControllerBase.swift */,
+			);
+			path = HeadGazeLib;
+			sourceTree = "<group>";
+		};
+		50BD591C23CBD953008734D4 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				50BD591D23CBD953008734D4 /* Throttler.swift */,
+				50BD591E23CBD953008734D4 /* MathUtility.swift */,
+				50BD591F23CBD953008734D4 /* ChargingThrottler.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		FCABEB4E23B828200055A559 = {
 			isa = PBXGroup;
 			children = (
@@ -70,6 +129,7 @@
 		FCABEB5923B828200055A559 /* 2048-plus */ = {
 			isa = PBXGroup;
 			children = (
+				50BD591523CBD953008734D4 /* HeadGazeLib */,
 				FCABEB8323BFF75F0055A559 /* Input */,
 				FCABEB7B23BE56220055A559 /* Models */,
 				FCABEB6C23B828270055A559 /* Info.plist */,
@@ -207,6 +267,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50BD592623CBDA96008734D4 /* UIHeadGazeViewController.swift in Sources */,
+				50BD592723CBDA96008734D4 /* UITrackButton.swift in Sources */,
+				50BD592823CBDA96008734D4 /* UIHoverableButton.swift in Sources */,
+				50BD592923CBDA96008734D4 /* UIHeadGazeEvent.swift in Sources */,
+				50BD592A23CBDA96008734D4 /* UIMultiFuncButton.swift in Sources */,
+				50BD592B23CBDA96008734D4 /* README.md in Sources */,
+				50BD592C23CBDA96008734D4 /* Throttler.swift in Sources */,
+				50BD592D23CBDA96008734D4 /* MathUtility.swift in Sources */,
+				50BD592E23CBDA96008734D4 /* ChargingThrottler.swift in Sources */,
+				50BD592F23CBDA96008734D4 /* UIVirtualCursorView.swift in Sources */,
+				50BD593023CBDA96008734D4 /* UIHeadGazeView.swift in Sources */,
+				50BD593123CBDA96008734D4 /* UIBubbleButton.swift in Sources */,
+				50BD593223CBDA96008734D4 /* UIHeadGazeRecognizer.swift in Sources */,
+				50BD593323CBDA96008734D4 /* UIHeadGazeViewControllerBase.swift in Sources */,
 				FCABEB7F23BE568B0055A559 /* Position.swift in Sources */,
 				FCABEB8223BFF6160055A559 /* GameScenceControlDelegate.swift in Sources */,
 				FCABEB6123B828200055A559 /* GameScene.swift in Sources */,
@@ -361,14 +435,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 7D6V6TM4RZ;
+				DEVELOPMENT_TEAM = 2RNDHTRX69;
 				INFOPLIST_FILE = "2048-plus/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.-048-plus";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.example.2048-plus";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -380,14 +454,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 7D6V6TM4RZ;
+				DEVELOPMENT_TEAM = 2RNDHTRX69;
 				INFOPLIST_FILE = "2048-plus/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.example.-048-plus";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.example.2048-plus";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
