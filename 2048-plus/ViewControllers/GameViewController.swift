@@ -24,6 +24,7 @@ struct isOutsideStruct {
 class GameViewController: UIHeadGazeViewController, SFSpeechRecognizerDelegate {
     
     @IBOutlet weak var skview: SKView!
+    @IBOutlet weak var backgroundView: UIView!
     
     private var isOutside = isOutsideStruct(top: false, bottom: false, left: false, right: false)
     private var headGazeRecognizer: UIHeadGazeRecognizer? = nil
@@ -31,20 +32,26 @@ class GameViewController: UIHeadGazeViewController, SFSpeechRecognizerDelegate {
     
     var voiceControlDeleget: GameScenceControlDelegate? = nil
     
+    var captureSession: AVCaptureSession!
+    var stillImageOutput: AVCapturePhotoOutput!
+    var videoPreviewLayer: AVCaptureVideoPreviewLayer!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.skview.allowsTransparency = true
         
         setupGestureRecognizer()
                 
         let scene = GameScene(size: skview.bounds.size)
+        
+        scene.backgroundColor = .clear
+        scene.scaleMode = .fill
+        
         voiceControlDeleget = scene
-        scene.scaleMode = .aspectFit
-        scene.backgroundColor = .black
         skview.presentScene(scene)
         skview.ignoresSiblingOrder = true
         skview.showsFPS = true
         skview.showsNodeCount = true
+        skview.allowsTransparency = true
     }
     
     private func setupGestureRecognizer() {
@@ -92,5 +99,49 @@ class GameViewController: UIHeadGazeViewController, SFSpeechRecognizerDelegate {
             }
             self.isOutside.bottom = isOutsideBottom
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        captureSession = AVCaptureSession()
+        captureSession.sessionPreset = .medium
+        guard let camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: AVMediaType.video, position: .front)
+            else {
+                print("Unable to access back camera!")
+                return
+        }
+        do {
+            let input = try AVCaptureDeviceInput(device: camera)
+            stillImageOutput = AVCapturePhotoOutput()
+            if captureSession.canAddInput(input) && captureSession.canAddOutput(stillImageOutput) {
+                captureSession.addInput(input)
+                captureSession.addOutput(stillImageOutput)
+                setupLivePreview()
+            }
+        }
+        catch let error  {
+            print("Error Unable to initialize back camera:  \(error.localizedDescription)")
+        }
+    }
+    
+    func setupLivePreview() {
+        
+        videoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        
+        videoPreviewLayer.videoGravity = .resizeAspectFill
+        videoPreviewLayer.connection?.videoOrientation = .portrait
+        backgroundView.layer.addSublayer(videoPreviewLayer)
+        
+        
+        DispatchQueue.global(qos: .userInitiated).async { //[weak self] in
+            self.captureSession.startRunning()
+           DispatchQueue.main.async {
+                self.videoPreviewLayer.frame = self.skview.bounds
+            }
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.captureSession.stopRunning()
     }
 }
