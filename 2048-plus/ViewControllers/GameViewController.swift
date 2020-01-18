@@ -21,7 +21,7 @@ struct isOutsideStruct {
 //    var righTimer: Timer
 }
 
-class GameViewController: UIHeadGazeViewController, SFSpeechRecognizerDelegate {
+class GameViewController: UIViewController {
     
     @IBOutlet weak var skview: SKView!
     @IBOutlet weak var backgroundView: UIView!
@@ -39,7 +39,7 @@ class GameViewController: UIHeadGazeViewController, SFSpeechRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupGestureRecognizer()
+        //setupGestureRecognizer()
                 
         let scene = GameScene(size: skview.bounds.size)
         
@@ -56,8 +56,8 @@ class GameViewController: UIHeadGazeViewController, SFSpeechRecognizerDelegate {
     
     private func setupGestureRecognizer() {
         self.headGazeRecognizer = UIHeadGazeRecognizer()
-        super.virtualCursorView?.smoothness = 4
-        super.virtualCursorView?.addGestureRecognizer(headGazeRecognizer)
+        //super.virtualCursorView?.smoothness = 4
+        //super.virtualCursorView?.addGestureRecognizer(headGazeRecognizer)
         headGazeRecognizer!.move = { [weak self] gaze in
             self?.moveAction(gaze: gaze)
         }

@@ -11,9 +11,12 @@ import Speech
 
 class GameScene: SKScene, GameScenceControlDelegate, SFSpeechRecognizerDelegate {
 
-    let SIZE = 3, DURATION = 0.08
+    let SIZE = 4, DURATION = 0.08
+    
+    var currentScore = 0
     
     var grid:Grid? = nil
+    var scoreLabel:SKLabelNode? = nil
     var tiles: [String:Tile] = [:]
     var nodes: [SKSpriteNode:Position] = [:]
     var touchInputManger: TouchInputManger? = nil
@@ -22,6 +25,7 @@ class GameScene: SKScene, GameScenceControlDelegate, SFSpeechRecognizerDelegate 
         touchInputManger = TouchInputManger.init(view: self.view!, controlDeleget: self)
         fillTiles()
         createGrid()
+        createScoreLabelNode()
         generateTile()
         generateTile()
     }
@@ -71,7 +75,7 @@ class GameScene: SKScene, GameScenceControlDelegate, SFSpeechRecognizerDelegate 
             let label = bigNode?.childNode(withName: "Label") as! SKLabelNode
             label.text = String(newValue)
             bigNode?.color = Colors.tile(value: newValue).color
-            
+            updateScore(score: newValue)
         }else{
             if tiles[getKey(position: newPosition)]?.value != nil{
                 return
@@ -108,8 +112,9 @@ class GameScene: SKScene, GameScenceControlDelegate, SFSpeechRecognizerDelegate 
     }
     
     func nextPosition(position:Position, direction:MoveDirection) -> Position {
-        var newX:Int = 0
-        var newY:Int = 0
+        var newX:Int = position.x
+        var newY:Int = position.y
+        
         switch direction {
             case MoveDirection.down:
                 newX = position.x + 1
@@ -152,7 +157,7 @@ class GameScene: SKScene, GameScenceControlDelegate, SFSpeechRecognizerDelegate 
             label.name = "Label"
             label.fontName = "AvenirNext-Bold"
             label.text = "2"
-            label.fontSize = 50
+            label.fontSize = 30
             label.horizontalAlignmentMode = .center
             label.verticalAlignmentMode = .center
             label.fontColor = UIColor.black
@@ -188,5 +193,33 @@ class GameScene: SKScene, GameScenceControlDelegate, SFSpeechRecognizerDelegate 
         case down
         case left
         case right
+    }
+    
+    func createScoreLabelNode(){
+        let margin = self.size.width * 0.04
+        let size   = self.size.width * 0.20
+        let rect = CGRect(x: 0, y: 0, width: size * 1.6, height: size)
+        let tile = SKShapeNode(rect: rect, cornerRadius: 13)
+        tile.fillColor = UIColor.orange
+        tile.strokeColor = UIColor.white
+        tile.lineWidth = 4
+        tile.position = CGPoint (x: (margin - margin * 0.15), y: self.size.height - rect.height - margin)
+        addChild(tile)
+        
+        scoreLabel = SKLabelNode()
+        scoreLabel?.name = "score"
+        scoreLabel?.fontName = "AvenirNext-Bold"
+        scoreLabel?.text = "Score: \(currentScore)"
+        scoreLabel?.fontSize = 20
+        scoreLabel?.horizontalAlignmentMode = .center
+        scoreLabel?.verticalAlignmentMode = .center
+        scoreLabel?.fontColor = UIColor.white
+        scoreLabel?.position = CGPoint(x: rect.width/2, y: rect.height/2)
+        tile.addChild(scoreLabel!)
+    }
+    
+    func updateScore(score: Int){
+        currentScore = currentScore + score
+        scoreLabel?.text = "Score: \(currentScore)"
     }
 }
