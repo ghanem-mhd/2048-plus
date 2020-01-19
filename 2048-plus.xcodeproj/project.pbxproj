@@ -110,6 +110,15 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
+		FC08753A23D3B1CC00DCDCBE /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				FCABEB7623B830F90055A559 /* Grid.swift */,
+				FCABEB7823B8359A0055A559 /* Colors.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		FCABEB4E23B828200055A559 = {
 			isa = PBXGroup;
 			children = (
@@ -129,6 +138,7 @@
 		FCABEB5923B828200055A559 /* 2048-plus */ = {
 			isa = PBXGroup;
 			children = (
+				FC08753A23D3B1CC00DCDCBE /* Utilities */,
 				50BD591523CBD953008734D4 /* HeadGazeLib */,
 				FCABEB8323BFF75F0055A559 /* Input */,
 				FCABEB7B23BE56220055A559 /* Models */,
@@ -153,8 +163,6 @@
 			isa = PBXGroup;
 			children = (
 				FCABEB6023B828200055A559 /* GameScene.swift */,
-				FCABEB7623B830F90055A559 /* Grid.swift */,
-				FCABEB7823B8359A0055A559 /* Colors.swift */,
 				FCABEB8023BFEF7A0055A559 /* GameScenceControlDelegate.swift */,
 			);
 			path = Scenes;

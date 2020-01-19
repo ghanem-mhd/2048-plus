@@ -7,9 +7,9 @@
 //
 
 import SpriteKit
-import Speech
+import CoreGraphics
 
-class GameScene: SKScene, GameScenceControlDelegate, SFSpeechRecognizerDelegate {
+class GameScene: SKScene, GameScenceControlDelegate {
 
     let SIZE = 4, DURATION = 0.08
     
@@ -26,7 +26,6 @@ class GameScene: SKScene, GameScenceControlDelegate, SFSpeechRecognizerDelegate 
         fillTiles()
         createGrid()
         createScoreLabelNode()
-        generateTile()
         generateTile()
     }
     
@@ -56,32 +55,37 @@ class GameScene: SKScene, GameScenceControlDelegate, SFSpeechRecognizerDelegate 
         return nil
     }
     
-    func moveNode(oldPosition: Position,newPosition: Position, node: SKSpriteNode){
+    func moveNode(oldPosition: Position,newPosition: Position, node: SKSpriteNode) -> Bool{
         if oldPosition == newPosition{ // the node is already on the boundery
-            return
+            return false
         }
         if tiles[getKey(position: oldPosition)]?.value  == tiles[getKey(position: newPosition)]?.value{
-            node.removeFromParent()
-            nodes.removeValue(forKey: node)
-            
             let bigNode = getNodeAtPosition(position: newPosition)
+            node.run(SKAction.move(to: bigNode!.position, duration: DURATION),completion: {
+                self.nodes.removeValue(forKey: node)
+                node.removeFromParent()
+
+            })
             guard let oldValue = tiles[getKey(position: newPosition)]?.value else {
-                return
+                return false
             }
-    
             let newValue = oldValue + oldValue
             tiles[getKey(position: newPosition)]?.value = newValue
             tiles[getKey(position: oldPosition)]?.value = nil
             let label = bigNode?.childNode(withName: "Label") as! SKLabelNode
             label.text = String(newValue)
+            label.fontColor = Colors.tileText(value: newValue).color
             bigNode?.color = Colors.tile(value: newValue).color
+            bigNode?.run(SKAction.sequence([SKAction.scale(to: 1.3, duration: DURATION * 1.5), SKAction.scale(to: 1, duration: DURATION * 1.5)]))
+
             updateScore(score: newValue)
+            return true
         }else{
             if tiles[getKey(position: newPosition)]?.value != nil{
-                return
+                return false
             }
             guard let coordinate = grid?.gridPosition(row: newPosition.x, col: newPosition.y) else {
-                return
+                return false
             }
             let oldValue = tiles[getKey(position: oldPosition)]?.value
             tiles[getKey(position: newPosition)]?.value = oldValue
@@ -89,15 +93,24 @@ class GameScene: SKScene, GameScenceControlDelegate, SFSpeechRecognizerDelegate 
             node.run(SKAction.move(to: coordinate, duration: DURATION), completion: {
                 self.nodes[node] = newPosition
             })
+             return true
         }
     }
     
     func handleShift(direction: MoveDirection){
+        var oneNodeMoved = false
         for (node, position) in nodes{
             let newPosition = nextPosition(position: position, direction: direction)
-            moveNode(oldPosition: position,newPosition: newPosition, node: node)
+            let nodeHasMoved = moveNode(oldPosition: position,newPosition: newPosition, node: node)
+            if nodeHasMoved{
+                oneNodeMoved = true
+            }
         }
-        generateTile()
+        if oneNodeMoved{
+            generateTile()
+        }else{
+            failedShiftingAnimation(to: direction)
+        }
     }
     
     func randomPosition() -> Position? {
@@ -150,6 +163,7 @@ class GameScene: SKScene, GameScenceControlDelegate, SFSpeechRecognizerDelegate 
             let size = CGFloat(frame.size.width / CGFloat(SIZE)  - 20)
             
             let block = SKSpriteNode(color: Colors.tile(value: 2).color, size: CGSize(width: size, height: size))
+            block.alpha = 0
             block.position = grid!.gridPosition(row: position.x, col: position.y)
             grid?.addChild(block)
             
@@ -160,11 +174,14 @@ class GameScene: SKScene, GameScenceControlDelegate, SFSpeechRecognizerDelegate 
             label.fontSize = 30
             label.horizontalAlignmentMode = .center
             label.verticalAlignmentMode = .center
-            label.fontColor = UIColor.black
+            label.fontColor = Colors.tileText(value: 2).color
+            
             block.addChild(label)
             
             tiles[getKey(position: position)]?.value = 2
             nodes[block] = position
+            
+            block.run(SKAction.fadeIn(withDuration: DURATION * 3))
         }
     }
     
@@ -221,5 +238,38 @@ class GameScene: SKScene, GameScenceControlDelegate, SFSpeechRecognizerDelegate 
     func updateScore(score: Int){
         currentScore = currentScore + score
         scoreLabel?.text = "Score: \(currentScore)"
+    }
+    
+    
+    func failedShiftingAnimation(to direction: MoveDirection) {
+        let delta: CGFloat = 30
+        var deltaPoint: CGPoint {
+            switch direction {
+            case .down:
+                return CGPoint(x: 0, y: -delta)
+            case .up:
+                return CGPoint(x: 0, y: delta)
+            case .left:
+                return CGPoint(x: -delta, y: 0)
+            case .right:
+                return CGPoint(x: delta, y: 0)
+            }
+        }
+        for node in nodes.keys {
+            let move        = SKAction.move(to: node.position + deltaPoint, duration: DURATION)
+            let moveBack    = SKAction.move(to: node.position, duration: DURATION)
+            node.run(SKAction.sequence([move,moveBack]))
+        }
+    }
+}
+
+
+public extension CGPoint{
+    static func +(left: CGPoint, right: CGPoint) -> CGPoint{
+        return CGPoint(x: left.x + right.x, y:left.y + right.y)
+    }
+    
+    static func -(left: CGPoint, right: CGPoint) -> CGPoint{
+        return CGPoint(x: left.x - right.x, y:left.y - right.y)
     }
 }
