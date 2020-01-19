@@ -10,7 +10,7 @@ import SpriteKit
 import CoreGraphics
 
 class GameScene: SKScene, GameScenceControlDelegate {
-
+    
     let SIZE = 4, DURATION = 0.08
     
     var currentScore = 0
@@ -18,7 +18,7 @@ class GameScene: SKScene, GameScenceControlDelegate {
     var grid:Grid? = nil
     var scoreLabel:SKLabelNode? = nil
     var tiles: [String:Tile] = [:]
-    var nodes: [SKSpriteNode:Position] = [:]
+    var nodes: [Position:SKSpriteNode] = [:]
     var touchInputManger: TouchInputManger? = nil
     
     override func didMove(to: SKView) {
@@ -26,7 +26,8 @@ class GameScene: SKScene, GameScenceControlDelegate {
         fillTiles()
         createGrid()
         createScoreLabelNode()
-        generateTile()
+        generateTile(extactPosition: Position(0,0))
+        generateTile(extactPosition: Position(0,3))
     }
     
     func createGrid(){
@@ -46,71 +47,144 @@ class GameScene: SKScene, GameScenceControlDelegate {
         }
     }
     
-    func getNodeAtPosition(position:Position) -> SKSpriteNode?{
-        for (node, nodePosition) in nodes{
-            if position == nodePosition{
-                return node
-            }
-        }
-        return nil
-    }
-    
-    func moveNode(oldPosition: Position,newPosition: Position, node: SKSpriteNode) -> Bool{
+    func moveNode(oldPosition: Position,newPosition: Position, node: SKSpriteNode, merge: Bool) -> Bool{
         if oldPosition == newPosition{ // the node is already on the boundery
             return false
         }
-        if tiles[getKey(position: oldPosition)]?.value  == tiles[getKey(position: newPosition)]?.value{
-            let bigNode = getNodeAtPosition(position: newPosition)
-            node.run(SKAction.move(to: bigNode!.position, duration: DURATION),completion: {
-                self.nodes.removeValue(forKey: node)
-                node.removeFromParent()
-
-            })
-            guard let oldValue = tiles[getKey(position: newPosition)]?.value else {
-                return false
-            }
-            let newValue = oldValue + oldValue
-            tiles[getKey(position: newPosition)]?.value = newValue
-            tiles[getKey(position: oldPosition)]?.value = nil
-            let label = bigNode?.childNode(withName: "Label") as! SKLabelNode
-            label.text = String(newValue)
-            label.fontColor = Colors.tileText(value: newValue).color
-            bigNode?.color = Colors.tile(value: newValue).color
-            bigNode?.run(SKAction.sequence([SKAction.scale(to: 1.3, duration: DURATION * 1.5), SKAction.scale(to: 1, duration: DURATION * 1.5)]))
-
-            updateScore(score: newValue)
-            return true
-        }else{
-            if tiles[getKey(position: newPosition)]?.value != nil{
-                return false
-            }
+        if (!merge){
             guard let coordinate = grid?.gridPosition(row: newPosition.x, col: newPosition.y) else {
                 return false
             }
-            let oldValue = tiles[getKey(position: oldPosition)]?.value
-            tiles[getKey(position: newPosition)]?.value = oldValue
-            tiles[getKey(position: oldPosition)]?.value = nil
-            node.run(SKAction.move(to: coordinate, duration: DURATION), completion: {
-                self.nodes[node] = newPosition
-            })
-             return true
+            node.run(SKAction.move(to: coordinate, duration: DURATION))
+            self.nodes.removeValue(forKey: oldPosition)
+            self.nodes[newPosition] = node
+            return true
+        }else{
+            let bigNode = self.nodes[newPosition]
+            
+            if bigNode == nil{
+                print("oldPosition \(oldPosition)")
+                print("newPosition \(newPosition)")
+                return false
+            }
+            
+            node.run(SKAction.move(to: bigNode!.position, duration: DURATION))
+            self.nodes.removeValue(forKey: oldPosition)
+            node.removeFromParent()
+            
+            let label = bigNode?.childNode(withName: "Label") as! SKLabelNode
+            let newValue = tiles[getKey(position: newPosition)]?.value
+            label.text = "\(newValue!)"
+            label.fontColor = Colors.tileText(value: newValue).color
+            bigNode?.color = Colors.tile(value: newValue).color
+            bigNode?.run(SKAction.sequence([SKAction.scale(to: 1.3, duration: DURATION * 1.5),
+                                           SKAction.scale(to: 1, duration: DURATION * 1.5)]))
+            updateScore(score: newValue!)
+            return true
         }
     }
     
     func handleShift(direction: MoveDirection){
+        var sortedNodes:[(Position,SKSpriteNode)]? = nil
+        switch direction {
+            case MoveDirection.down:
+                sortedNodes = nodes.sorted{ $0.key.x > $1.key.x}
+            case MoveDirection.up:
+                sortedNodes = nodes.sorted{ $0.key.x < $1.key.x}
+            case MoveDirection.right:
+                sortedNodes = nodes.sorted{ $0.key.y > $1.key.y}
+            case MoveDirection.left:
+                sortedNodes = nodes.sorted{ $0.key.y < $1.key.y}
+        }
         var oneNodeMoved = false
-        for (node, position) in nodes{
-            let newPosition = nextPosition(position: position, direction: direction)
-            let nodeHasMoved = moveNode(oldPosition: position,newPosition: newPosition, node: node)
+        
+        for (position, node) in sortedNodes!{
+            let (newPosition,merge) = nextPositionV2(oldPosition: position, direction: direction)
+            let nodeHasMoved = moveNode(oldPosition: position,newPosition: newPosition, node: node, merge:merge)
             if nodeHasMoved{
                 oneNodeMoved = true
             }
         }
         if oneNodeMoved{
-            generateTile()
+            generateTile(extactPosition: nil)
         }else{
             failedShiftingAnimation(to: direction)
         }
+    }
+        
+    func nextPositionV2(oldPosition:Position, direction:MoveDirection) -> (Position,Bool) {
+        var newX:Int = oldPosition.x
+        var newY:Int = oldPosition.y
+        
+        var merge = false
+        
+        let valueToMove = tiles[getKey(position: oldPosition)]?.value
+    
+        if (direction == MoveDirection.up){
+            while(newX >= 1 && tiles[getKey(position: Position(newX - 1,newY))]?.value == nil){
+                newX = newX - 1
+            }
+            let newPositionValue = tiles[getKey(position: Position(newX - 1,newY))]?.value
+            if (valueToMove == newPositionValue){
+                newX = newX - 1
+                tiles[getKey(position: Position(newX,newY))]?.value = newPositionValue! * 2
+                tiles[getKey(position: oldPosition)]?.value = nil
+                merge = true
+            }else{
+                tiles[getKey(position: oldPosition)]?.value = nil
+                tiles[getKey(position: Position(newX,newY))]?.value = valueToMove
+            }
+        }
+        
+        if (direction == MoveDirection.down){
+            while(newX < SIZE - 1 && tiles[getKey(position: Position(newX + 1,newY))]?.value == nil){
+                newX = newX + 1
+            }
+            let newPositionValue = tiles[getKey(position: Position(newX + 1,newY))]?.value
+            if (valueToMove == newPositionValue){
+                newX = newX + 1
+                tiles[getKey(position: Position(newX,newY))]?.value = newPositionValue! * 2
+                tiles[getKey(position: oldPosition)]?.value = nil
+                merge = true
+            }else{
+                tiles[getKey(position: oldPosition)]?.value = nil
+                tiles[getKey(position: Position(newX,newY))]?.value = valueToMove
+            }
+        }
+        
+        if (direction == MoveDirection.right){
+            while(newY < SIZE - 1 && tiles[getKey(position: Position(newX,newY + 1))]?.value == nil){
+                newY = newY + 1
+            }
+            let newPositionValue = tiles[getKey(position: Position(newX,newY + 1))]?.value
+            if (valueToMove == newPositionValue){
+                newY = newY + 1
+                tiles[getKey(position: Position(newX,newY))]?.value = newPositionValue! * 2
+                tiles[getKey(position: oldPosition)]?.value = nil
+                merge = true
+            }else{
+                tiles[getKey(position: oldPosition)]?.value = nil
+                tiles[getKey(position: Position(newX,newY))]?.value = valueToMove
+            }
+        }
+        
+        if (direction == MoveDirection.left){
+            while(newY >= 1 && tiles[getKey(position: Position(newX,newY - 1))]?.value == nil){
+                newY = newY - 1
+            }
+            let newPositionValue = tiles[getKey(position: Position(newX,newY - 1))]?.value
+            if (valueToMove == newPositionValue){
+                newY = newY - 1
+                tiles[getKey(position: Position(newX,newY))]?.value = newPositionValue! * 2
+                tiles[getKey(position: oldPosition)]?.value = nil
+                merge = true
+            }else{
+                tiles[getKey(position: oldPosition)]?.value = nil
+                tiles[getKey(position: Position(newX,newY))]?.value = valueToMove
+            }
+        }
+        
+        return (Position(newX, newY), merge)
     }
     
     func randomPosition() -> Position? {
@@ -124,44 +198,15 @@ class GameScene: SKScene, GameScenceControlDelegate {
         }
     }
     
-    func nextPosition(position:Position, direction:MoveDirection) -> Position {
-        var newX:Int = position.x
-        var newY:Int = position.y
-        
-        switch direction {
-            case MoveDirection.down:
-                newX = position.x + 1
-                newY = position.y
-            case MoveDirection.up:
-                newX = position.x - 1
-                newY = position.y
-            case MoveDirection.right:
-                newX = position.x
-                newY = position.y + 1
-            case MoveDirection.left:
-                newX = position.x
-                newY = position.y - 1
+    func generateTile(extactPosition: Position?){
+        var tilePosition:Position? = nil
+        if extactPosition == nil{
+            tilePosition = randomPosition()
+        }else{
+            tilePosition = extactPosition
         }
-        if newX < 0 {
-            newX = 0
-        }
-        if newX >= SIZE{
-            newX = SIZE - 1
-        }
-        if newY < 0 {
-            newY = 0
-        }
-        if newY >= SIZE{
-            newY = SIZE - 1
-        }
-        return Position(newX, newY)
-    }
-    
-    
-    func generateTile(){
-        if let position = randomPosition(){
+        if let position = tilePosition{
             let size = CGFloat(frame.size.width / CGFloat(SIZE)  - 20)
-            
             let block = SKSpriteNode(color: Colors.tile(value: 2).color, size: CGSize(width: size, height: size))
             block.alpha = 0
             block.position = grid!.gridPosition(row: position.x, col: position.y)
@@ -179,7 +224,7 @@ class GameScene: SKScene, GameScenceControlDelegate {
             block.addChild(label)
             
             tiles[getKey(position: position)]?.value = 2
-            nodes[block] = position
+            nodes[position] = block
             
             block.run(SKAction.fadeIn(withDuration: DURATION * 3))
         }
@@ -255,7 +300,7 @@ class GameScene: SKScene, GameScenceControlDelegate {
                 return CGPoint(x: delta, y: 0)
             }
         }
-        for node in nodes.keys {
+        for node in nodes.values {
             let move        = SKAction.move(to: node.position + deltaPoint, duration: DURATION)
             let moveBack    = SKAction.move(to: node.position, duration: DURATION)
             node.run(SKAction.sequence([move,moveBack]))
