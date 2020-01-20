@@ -19,15 +19,21 @@ class GameScene: SKScene, GameScenceControlDelegate {
     var scoreLabel:SKLabelNode? = nil
     var tiles: [String:Tile] = [:]
     var nodes: [Position:SKSpriteNode] = [:]
+    var blackHols = Set<Position>()
     var touchInputManger: TouchInputManger? = nil
     
     override func didMove(to: SKView) {
         touchInputManger = TouchInputManger.init(view: self.view!, controlDeleget: self)
+        startGame()
+    }
+    
+    func startGame(){
         fillTiles()
         createGrid()
         createScoreLabelNode()
-        generateTile(extactPosition: Position(0,0))
-        generateTile(extactPosition: Position(0,3))
+        generateTile(extactPosition: nil)
+        generateTile(extactPosition: nil)
+        //generateBlackHoleTile(extactPosition:nil)
     }
     
     func createGrid(){
@@ -75,6 +81,7 @@ class GameScene: SKScene, GameScenceControlDelegate {
             let label = bigNode?.childNode(withName: "Label") as! SKLabelNode
             let newValue = tiles[getKey(position: newPosition)]?.value
             label.text = "\(newValue!)"
+            
             label.fontColor = Colors.tileText(value: newValue).color
             bigNode?.color = Colors.tile(value: newValue).color
             bigNode?.run(SKAction.sequence([SKAction.scale(to: 1.3, duration: DURATION * 1.5),
@@ -109,6 +116,9 @@ class GameScene: SKScene, GameScenceControlDelegate {
             generateTile(extactPosition: nil)
         }else{
             failedShiftingAnimation(to: direction)
+            if nodes.values.count == SIZE * SIZE{
+                userDidLost()
+            }
         }
     }
         
@@ -191,7 +201,6 @@ class GameScene: SKScene, GameScenceControlDelegate {
         let tilesArray = Array(tiles.values)
         let emptyTiles = tilesArray.filter({$0.value == nil})
         if emptyTiles.count == 0 {
-            print("GameOver")
             return nil
         }else{
             return emptyTiles[Int(arc4random_uniform(UInt32(emptyTiles.count)))].position
@@ -216,7 +225,7 @@ class GameScene: SKScene, GameScenceControlDelegate {
             label.name = "Label"
             label.fontName = "AvenirNext-Bold"
             label.text = "2"
-            label.fontSize = 30
+            label.fontSize = 25
             label.horizontalAlignmentMode = .center
             label.verticalAlignmentMode = .center
             label.fontColor = Colors.tileText(value: 2).color
@@ -227,6 +236,23 @@ class GameScene: SKScene, GameScenceControlDelegate {
             nodes[position] = block
             
             block.run(SKAction.fadeIn(withDuration: DURATION * 3))
+        }
+    }
+    
+    func generateBlackHoleTile(extactPosition: Position?){
+        var tilePosition:Position? = nil
+        if extactPosition == nil{
+            tilePosition = randomPosition()
+        }else{
+            tilePosition = extactPosition
+        }
+        if let position = tilePosition{
+            let size = CGFloat(frame.size.width / CGFloat(SIZE) - 10)
+            let block = SKSpriteNode(color: UIColor.white, size: CGSize(width: size, height: size))
+            block.position = grid!.gridPosition(row: position.x, col: position.y)
+            grid?.addChild(block)
+                        
+            blackHols.insert(position)
         }
     }
     
@@ -306,6 +332,21 @@ class GameScene: SKScene, GameScenceControlDelegate {
             node.run(SKAction.sequence([move,moveBack]))
         }
     }
+    
+    func clearGameBoard(){
+        self.removeAllChildren()
+    }
+    
+    func userDidLost() {
+        let alert = UIAlertController(title: "You've Lost", message: "Good luck next time!", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Restart", style: .default, handler: { _ in
+            self.clearGameBoard()
+            self.startGame()
+        }))
+        self.view?.window?.rootViewController?.present(alert, animated: true, completion: nil)
+    }
+    
+    
 }
 
 
