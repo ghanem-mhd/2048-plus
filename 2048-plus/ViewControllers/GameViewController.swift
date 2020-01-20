@@ -8,26 +8,28 @@
 
 import UIKit
 import SpriteKit
+import ARKit
 import Speech
 
-struct isOutsideStruct {
-    var top: Bool
-//    var topTimer: Timer
-    var bottom: Bool
-//    var bottomTimer: Timer
-    var left: Bool
-//    var leftTimer: Timer
-    var right: Bool
-//    var righTimer: Timer
-}
 
-class GameViewController: UIViewController {
+class GameViewController: UIViewController, ARSessionDelegate {
     
-    @IBOutlet weak var skview: SKView!
+    @IBOutlet weak var skview: ARSKView!
     @IBOutlet weak var backgroundView: UIView!
     
-    private var isOutside = isOutsideStruct(top: false, bottom: false, left: false, right: false)
-    private var headGazeRecognizer: UIHeadGazeRecognizer? = nil
+    private var deltaDelay = 20
+    private var deltaDelayCount = 0
+    
+    private var lastMove = ""
+    private var lastMoveDelay = 2
+    private var noMoveCount = 0
+    
+    private var xHeadDelta: Float = 0.0
+    private var xHeadLast: Float = 0.0
+    private var yHeadLast: Float = 0.0
+    private var yHeadDelta: Float = 0.0
+    
+    var currentFaceAnchor: ARFaceAnchor?
     
     
     var voiceControlDeleget: GameScenceControlDelegate? = nil
@@ -38,13 +40,15 @@ class GameViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        //setupGestureRecognizer()
                 
         let scene = GameScene(size: skview.bounds.size)
         
         scene.backgroundColor = .clear
         scene.scaleMode = .fill
+        
+        skview.delegate = self
+        skview.session.delegate = self
+        
         
         voiceControlDeleget = scene
         skview.presentScene(scene)
@@ -54,94 +58,122 @@ class GameViewController: UIViewController {
         skview.allowsTransparency = true
     }
     
-    private func setupGestureRecognizer() {
-        self.headGazeRecognizer = UIHeadGazeRecognizer()
-        //super.virtualCursorView?.smoothness = 4
-        //super.virtualCursorView?.addGestureRecognizer(headGazeRecognizer)
-        headGazeRecognizer!.move = { [weak self] gaze in
-            self?.moveAction(gaze: gaze)
-        }
-    }
-    
-    private func moveAction(gaze: UIHeadGaze){
-        if true {
-            let localCursorPos = gaze.location(in: self.skview)
-            
-            let isOutsideLeft = localCursorPos.x < 0
-            if !self.isOutside.left && isOutsideLeft {
-                // just went outside
-//                self.isOutside.leftTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { (timer) in
-//                    // ignore next
-//                }
-            }
-            if self.isOutside.left && !isOutsideLeft {
-                // came back
-//                let timer =
-                self.voiceControlDeleget!.shiftLeft()
-            }
-            self.isOutside.left = isOutsideLeft
-            
-            let isOutsideRight = localCursorPos.x > 300
-            if self.isOutside.right && !isOutsideRight {
-                self.voiceControlDeleget!.shiftRight()
-            }
-            self.isOutside.right = isOutsideRight
-            
-            let isOutsideTop = localCursorPos.y < 100
-            if self.isOutside.top && !isOutsideTop {
-                self.voiceControlDeleget!.shiftUp()
-            }
-            self.isOutside.top = isOutsideTop
-            
-            let isOutsideBottom = localCursorPos.y > 540
-            if self.isOutside.bottom && !isOutsideBottom {
-                self.voiceControlDeleget!.shiftDown()
-            }
-            self.isOutside.bottom = isOutsideBottom
-        }
+    func resetTracking() {
+        guard ARFaceTrackingConfiguration.isSupported else { return }
+        let configuration = ARFaceTrackingConfiguration()
+        configuration.isLightEstimationEnabled = true
+        skview.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        captureSession = AVCaptureSession()
-        captureSession.sessionPreset = .medium
-        guard let camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: AVMediaType.video, position: .front)
-            else {
-                print("Unable to access back camera!")
-                return
-        }
-        do {
-            let input = try AVCaptureDeviceInput(device: camera)
-            stillImageOutput = AVCapturePhotoOutput()
-            if captureSession.canAddInput(input) && captureSession.canAddOutput(stillImageOutput) {
-                captureSession.addInput(input)
-                captureSession.addOutput(stillImageOutput)
-                setupLivePreview()
-            }
-        }
-        catch let error  {
-            print("Error Unable to initialize back camera:  \(error.localizedDescription)")
-        }
+        // AR experiences typically involve moving the device without
+        // touch input for some time, so prevent auto screen dimming.
+        UIApplication.shared.isIdleTimerDisabled = true
+        
+        // "Reset" to run the AR session for the first time.
+        resetTracking()
     }
     
-    func setupLivePreview() {
-        
-        videoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        
-        videoPreviewLayer.videoGravity = .resizeAspectFill
-        videoPreviewLayer.connection?.videoOrientation = .portrait
-        backgroundView.layer.addSublayer(videoPreviewLayer)
-        
-        
-        DispatchQueue.global(qos: .userInitiated).async { //[weak self] in
-            self.captureSession.startRunning()
-           DispatchQueue.main.async {
-                self.videoPreviewLayer.frame = self.skview.bounds
-            }
-        }
-    }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.captureSession.stopRunning()
+    }
+    
+    // MARK: - Error handling
+    
+    func displayErrorMessage(title: String, message: String) {
+        // Present an alert informing about the error that has occurred.
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let restartAction = UIAlertAction(title: "Restart Session", style: .default) { _ in
+            alertController.dismiss(animated: true, completion: nil)
+            self.resetTracking()
+        }
+        alertController.addAction(restartAction)
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    func session(_ session: ARSession, didFailWithError error: Error) {
+        guard error is ARError else { return }
+        
+        let errorWithInfo = error as NSError
+        let messages = [
+            errorWithInfo.localizedDescription,
+            errorWithInfo.localizedFailureReason,
+            errorWithInfo.localizedRecoverySuggestion
+        ]
+        let errorMessage = messages.compactMap({ $0 }).joined(separator: "\n")
+        
+        DispatchQueue.main.async {
+            self.displayErrorMessage(title: "The AR session failed.", message: errorMessage)
+        }
+    }
+}
+
+extension GameViewController: ARSKViewDelegate {
+        
+    func view(_ renderer: ARSKView, didAdd node: SKNode, for anchor: ARAnchor) {
+        guard let faceAnchor = anchor as? ARFaceAnchor else { return }
+        currentFaceAnchor = faceAnchor
+        
+        print(currentFaceAnchor!.transform)
+    }
+    
+    /// - Tag: ARFaceGeometryUpdate
+    func view(_ renderer: ARSKView, didUpdate node: SKNode, for anchor: ARAnchor) {
+        guard let faceAnchor = anchor as? ARFaceAnchor else { return }
+        currentFaceAnchor = faceAnchor
+        
+        let xHead = currentFaceAnchor!.transform[2, 0]
+        let yHead = currentFaceAnchor!.transform[1, 2]
+        
+        deltaDelayCount += 1
+        if (deltaDelayCount < deltaDelay) {
+            xHeadDelta += (xHead - xHeadLast)
+            yHeadDelta += (yHead - yHeadLast)
+            xHeadLast = xHead
+            yHeadLast = yHead
+            return
+        }
+        
+        let roundedYDelta = Double(round(1000*yHeadDelta)/1000)
+        let roundedXDelta = Double(round(1000*xHeadDelta)/1000)
+        
+        if roundedXDelta < -0.1 {
+            // left
+            if lastMove == "right" {
+                self.voiceControlDeleget!.shiftRight()
+            }
+            lastMove = "left"
+        } else if roundedXDelta > 0.1 {
+            // right
+            if lastMove == "left" {
+                self.voiceControlDeleget!.shiftLeft()
+            }
+            lastMove = "right"
+        } else if roundedYDelta < -0.1 {
+            // up
+            print("up")
+            if lastMove == "down" {
+                self.voiceControlDeleget!.shiftDown()
+            }
+            lastMove = "up"
+        } else if roundedYDelta > 0.1 {
+            // down
+            print("down")
+            if lastMove == "up" {
+                self.voiceControlDeleget!.shiftUp()
+            }
+            lastMove = "down"
+        } else {
+            noMoveCount += 1
+            if lastMoveDelay <= noMoveCount {
+                lastMove = ""
+                noMoveCount = 0
+            }
+        }
+        
+        deltaDelayCount = 0
+        xHeadDelta = 0
+        yHeadDelta = 0
     }
 }

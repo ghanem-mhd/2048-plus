@@ -16,32 +16,26 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1ob-G8-Syq">
-                                <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1ob-G8-Syq">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <color key="backgroundColor" systemColor="systemOrangeColor" red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
-                            <skView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Bg-sR-YNN">
-                                <rect key="frame" x="0.0" y="44" width="414" height="818"/>
-                            </skView>
+                            <arskView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KQx-sC-XdB">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </arskView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="1ob-G8-Syq" firstAttribute="top" secondItem="khF-i0-1tM" secondAttribute="top" id="2gc-lP-hXl"/>
                             <constraint firstItem="khF-i0-1tM" firstAttribute="trailing" secondItem="1ob-G8-Syq" secondAttribute="trailing" id="HJ2-Gq-TOx"/>
                             <constraint firstItem="1ob-G8-Syq" firstAttribute="leading" secondItem="khF-i0-1tM" secondAttribute="leading" id="I87-f0-LnP"/>
-                            <constraint firstItem="khF-i0-1tM" firstAttribute="bottom" secondItem="1ob-G8-Syq" secondAttribute="bottom" id="M8W-t1-hOL"/>
-                            <constraint firstItem="8Bg-sR-YNN" firstAttribute="top" secondItem="khF-i0-1tM" secondAttribute="top" id="NL5-AH-WNS"/>
-                            <constraint firstItem="8Bg-sR-YNN" firstAttribute="centerX" secondItem="kJ9-KS-HKj" secondAttribute="centerX" id="U19-Op-oaY"/>
-                            <constraint firstItem="8Bg-sR-YNN" firstAttribute="leading" secondItem="khF-i0-1tM" secondAttribute="leading" id="lS4-FW-WMJ"/>
-                            <constraint firstItem="khF-i0-1tM" firstAttribute="trailing" secondItem="8Bg-sR-YNN" secondAttribute="trailing" id="qKD-7h-NLJ"/>
-                            <constraint firstItem="khF-i0-1tM" firstAttribute="bottom" secondItem="8Bg-sR-YNN" secondAttribute="bottom" id="qd5-Vy-4C3"/>
-                            <constraint firstItem="8Bg-sR-YNN" firstAttribute="centerY" secondItem="kJ9-KS-HKj" secondAttribute="centerY" id="tHq-jN-LfS"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="khF-i0-1tM"/>
                     </view>
                     <connections>
                         <outlet property="backgroundView" destination="1ob-G8-Syq" id="Pxd-f6-Kt5"/>
-                        <outlet property="skview" destination="8Bg-sR-YNN" id="kzq-Ab-PlF"/>
+                        <outlet property="skview" destination="KQx-sC-XdB" id="YFo-ee-WsN"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
