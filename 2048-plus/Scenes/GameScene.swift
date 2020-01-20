@@ -258,14 +258,14 @@ class GameScene: SKScene, GameScenceControlDelegate {
     }
     
     func createScoreLabelNode(){
-        let margin = self.size.width * 0.04
+        let margin = self.size.height * 0.1
         let size   = self.size.width * 0.20
-        let rect = CGRect(x: 0, y: 0, width: size * 1.6, height: size)
+        let rect = CGRect(x: 0, y: 0, width: size * 2, height: size)
         let tile = SKShapeNode(rect: rect, cornerRadius: 13)
         tile.fillColor = UIColor.orange
         tile.strokeColor = UIColor.white
         tile.lineWidth = 4
-        tile.position = CGPoint (x: (margin - margin * 0.15), y: self.size.height - rect.height - margin)
+        tile.position = CGPoint (x: self.frame.midX - rect.width/2, y: self.size.height - rect.height - margin)
         addChild(tile)
         
         scoreLabel = SKLabelNode()

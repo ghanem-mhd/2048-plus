@@ -13,10 +13,7 @@ import Speech
 
 
 class GameViewController: UIViewController, ARSessionDelegate {
-    
-    @IBOutlet weak var skview: ARSKView!
-    @IBOutlet weak var backgroundView: UIView!
-    
+        
     private var deltaDelay = 20
     private var deltaDelayCount = 0
     
@@ -30,26 +27,22 @@ class GameViewController: UIViewController, ARSessionDelegate {
     private var yHeadDelta: Float = 0.0
     
     var currentFaceAnchor: ARFaceAnchor?
-    
-    
     var voiceControlDeleget: GameScenceControlDelegate? = nil
     
-    var captureSession: AVCaptureSession!
-    var stillImageOutput: AVCapturePhotoOutput!
-    var videoPreviewLayer: AVCaptureVideoPreviewLayer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-                
+        
+        guard let skview = self.view as? ARSKView else{
+            return
+        }
         let scene = GameScene(size: skview.bounds.size)
+        voiceControlDeleget = scene
         
         scene.backgroundColor = .clear
         
         skview.delegate = self
         skview.session.delegate = self
-        
-        
-        voiceControlDeleget = scene
         skview.presentScene(scene)
         skview.ignoresSiblingOrder = true
         skview.showsFPS = true
@@ -58,6 +51,7 @@ class GameViewController: UIViewController, ARSessionDelegate {
     }
     
     func resetTracking() {
+        guard let skview = self.view as? ARSKView else{ return }
         guard ARFaceTrackingConfiguration.isSupported else { return }
         let configuration = ARFaceTrackingConfiguration()
         configuration.isLightEstimationEnabled = true
@@ -77,8 +71,6 @@ class GameViewController: UIViewController, ARSessionDelegate {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
     }
-    
-    // MARK: - Error handling
     
     func displayErrorMessage(title: String, message: String) {
         // Present an alert informing about the error that has occurred.

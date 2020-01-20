@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
-    <device id="retina6_5" orientation="portrait" appearance="light"/>
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -12,36 +11,14 @@
         <scene sceneID="tXr-a1-R10">
             <objects>
                 <viewController id="BV1-FR-VrT" customClass="GameViewController" customModule="_048_plus" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="kJ9-KS-HKj">
+                    <view key="view" contentMode="scaleToFill" id="kJ9-KS-HKj" customClass="ARSKView">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1ob-G8-Syq">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" systemColor="systemOrangeColor" red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            </view>
-                            <arskView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KQx-sC-XdB">
-                                <rect key="frame" x="0.0" y="44" width="414" height="832"/>
-                            </arskView>
-                        </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <constraints>
-                            <constraint firstItem="KQx-sC-XdB" firstAttribute="trailing" secondItem="khF-i0-1tM" secondAttribute="trailing" id="Xlw-r2-aK3"/>
-                            <constraint firstItem="KQx-sC-XdB" firstAttribute="leading" secondItem="khF-i0-1tM" secondAttribute="leading" id="cV4-gh-mxf"/>
-                            <constraint firstAttribute="bottom" secondItem="KQx-sC-XdB" secondAttribute="bottom" constant="20" symbolic="YES" id="hMn-qR-UpE"/>
-                            <constraint firstItem="KQx-sC-XdB" firstAttribute="top" secondItem="khF-i0-1tM" secondAttribute="top" id="ldZ-zS-eAa"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="khF-i0-1tM"/>
                     </view>
-                    <connections>
-                        <outlet property="backgroundView" destination="1ob-G8-Syq" id="Pxd-f6-Kt5"/>
-                        <outlet property="skview" destination="KQx-sC-XdB" id="YFo-ee-WsN"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="137.68115942028987" y="82.366071428571431"/>
+            <point key="canvasLocation" x="137.68115942028987" y="82.33695652173914"/>
         </scene>
     </scenes>
 </document>
