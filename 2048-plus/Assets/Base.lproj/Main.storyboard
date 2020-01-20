@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <device id="retina6_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
@@ -16,20 +16,21 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1ob-G8-Syq">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                                <color key="backgroundColor" systemColor="systemOrangeColor" red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            </view>
-                            <arskView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KQx-sC-XdB">
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1ob-G8-Syq">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" systemColor="systemOrangeColor" red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                            <arskView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KQx-sC-XdB">
+                                <rect key="frame" x="0.0" y="44" width="414" height="832"/>
                             </arskView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="1ob-G8-Syq" firstAttribute="top" secondItem="khF-i0-1tM" secondAttribute="top" id="2gc-lP-hXl"/>
-                            <constraint firstItem="khF-i0-1tM" firstAttribute="trailing" secondItem="1ob-G8-Syq" secondAttribute="trailing" id="HJ2-Gq-TOx"/>
-                            <constraint firstItem="1ob-G8-Syq" firstAttribute="leading" secondItem="khF-i0-1tM" secondAttribute="leading" id="I87-f0-LnP"/>
+                            <constraint firstItem="KQx-sC-XdB" firstAttribute="trailing" secondItem="khF-i0-1tM" secondAttribute="trailing" id="Xlw-r2-aK3"/>
+                            <constraint firstItem="KQx-sC-XdB" firstAttribute="leading" secondItem="khF-i0-1tM" secondAttribute="leading" id="cV4-gh-mxf"/>
+                            <constraint firstAttribute="bottom" secondItem="KQx-sC-XdB" secondAttribute="bottom" constant="20" symbolic="YES" id="hMn-qR-UpE"/>
+                            <constraint firstItem="KQx-sC-XdB" firstAttribute="top" secondItem="khF-i0-1tM" secondAttribute="top" id="ldZ-zS-eAa"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="khF-i0-1tM"/>
                     </view>

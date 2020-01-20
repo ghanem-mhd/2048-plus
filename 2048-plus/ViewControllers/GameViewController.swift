@@ -44,7 +44,6 @@ class GameViewController: UIViewController, ARSessionDelegate {
         let scene = GameScene(size: skview.bounds.size)
         
         scene.backgroundColor = .clear
-        scene.scaleMode = .fill
         
         skview.delegate = self
         skview.session.delegate = self
