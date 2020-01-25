@@ -8,10 +8,12 @@
 
 import SpriteKit
 import CoreGraphics
+import Foundation
+import AudioToolbox
 
 class GameScene: SKScene, GameScenceControlDelegate {
     
-    let blackholsEnabled = false
+    let blackholsEnabled = true
     let reverse = false
     let speedModeEnabled = false
     
@@ -23,7 +25,7 @@ class GameScene: SKScene, GameScenceControlDelegate {
     var scoreLabel:SKLabelNode? = nil
     var tiles: [String:Tile] = [:]
     var nodes: [Position:SKSpriteNode] = [:]
-    var blackHols = Set<Position>()
+    var blackHols: [Position:SKSpriteNode] = [:]
     var touchInputManger: TouchInputManger? = nil
     
     override func didMove(to: SKView) {
@@ -36,11 +38,8 @@ class GameScene: SKScene, GameScenceControlDelegate {
         createGrid()
         createScoreLabelNode()
         if (blackholsEnabled){
-            generateBlackHoleTile(extactPosition:nil)
-            generateBlackHoleTile(extactPosition:nil)
-            //generateBlackHoleTile(extactPosition:Position(SIZE-1,0))
-            //generateBlackHoleTile(extactPosition:Position(0,SIZE-1))
-            //generateBlackHoleTile(extactPosition:Position(SIZE-1,SIZE-1))
+            generateBlackHoleTile(row:1)
+            generateBlackHoleTile(row:3)
         }
         generateTile(extactPosition: nil)
         generateTile(extactPosition: nil)
@@ -71,10 +70,13 @@ class GameScene: SKScene, GameScenceControlDelegate {
             guard let coordinate = grid?.gridPosition(row: newPosition.x, col: newPosition.y) else {
                 return false
             }
-            node.run(SKAction.move(to: coordinate, duration: DURATION))
+            node.run(SKAction.move(to: coordinate, duration: DURATION),completion: {
+                node.removeFromParent()
+                self.blackHols[newPosition]?.run(SKAction.sequence([SKAction.colorize(with: UIColor.red, colorBlendFactor: 1.0, duration: self.DURATION * 1.9),SKAction.colorize(with: UIColor.clear, colorBlendFactor: 0.0, duration: self.DURATION * 1.9)]))
+                AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
+            })
             self.nodes.removeValue(forKey: oldPosition)
             self.nodes.removeValue(forKey: oldPosition)
-            node.removeFromParent()
             return true
         }
         
@@ -156,9 +158,11 @@ class GameScene: SKScene, GameScenceControlDelegate {
     
         if (direction == MoveDirection.up){
             if (blackholsEnabled){
-                for blackhole in blackHols{
+                for blackhole in blackHols.keys{
                     if (blackhole.y == oldPosition.y && blackhole.x < oldPosition.x){
                         status = NodeStatus.vanish
+                        let value = tiles[getKey(position: oldPosition)]?.value
+                        updateScore(score: -value!)
                         tiles[getKey(position: oldPosition)]?.value = nil
                         return (Position(blackhole.x, blackhole.y), status)
                     }
@@ -181,9 +185,11 @@ class GameScene: SKScene, GameScenceControlDelegate {
         
         if (direction == MoveDirection.down){
             if (blackholsEnabled){
-                for blackhole in blackHols{
+                for blackhole in blackHols.keys{
                     if (blackhole.y == oldPosition.y && blackhole.x > oldPosition.x){
                         status = NodeStatus.vanish
+                        let value = tiles[getKey(position: oldPosition)]?.value
+                        updateScore(score: -value!)
                         tiles[getKey(position: oldPosition)]?.value = nil
                         return (Position(blackhole.x, blackhole.y), status)
                     }
@@ -206,9 +212,11 @@ class GameScene: SKScene, GameScenceControlDelegate {
         
         if (direction == MoveDirection.right){
             if (blackholsEnabled){
-                for blackhole in blackHols{
+                for blackhole in blackHols.keys{
                     if (blackhole.x == oldPosition.x && blackhole.y > oldPosition.y){
                         status = NodeStatus.vanish
+                        let value = tiles[getKey(position: oldPosition)]?.value
+                        updateScore(score: -value!)
                         tiles[getKey(position: oldPosition)]?.value = nil
                         return (Position(blackhole.x, blackhole.y), status)
                     }
@@ -231,9 +239,11 @@ class GameScene: SKScene, GameScenceControlDelegate {
         
         if (direction == MoveDirection.left){
             if (blackholsEnabled){
-                for blackhole in blackHols{
+                for blackhole in blackHols.keys{
                     if (blackhole.x == oldPosition.x && blackhole.y < oldPosition.y){
                         status = NodeStatus.vanish
+                        let value = tiles[getKey(position: oldPosition)]?.value
+                        updateScore(score: -value!)
                         tiles[getKey(position: oldPosition)]?.value = nil
                         return (Position(blackhole.x, blackhole.y), status)
                     }
@@ -263,7 +273,7 @@ class GameScene: SKScene, GameScenceControlDelegate {
             return nil
         }else{
             var emptyPosition: Position?
-            while (emptyPosition == nil || blackHols.contains(emptyPosition!)) {
+            while (emptyPosition == nil || blackHols.keys.contains(emptyPosition!)) {
                 emptyPosition = emptyTiles[Int(arc4random_uniform(UInt32(emptyTiles.count)))].position
             }
             return emptyPosition
@@ -302,22 +312,17 @@ class GameScene: SKScene, GameScenceControlDelegate {
         }
     }
     
-    func generateBlackHoleTile(extactPosition: Position?){
+    func generateBlackHoleTile(row: Int){
         var tilePosition:Position? = nil
-        if extactPosition == nil{
-            while (tilePosition == nil || blackHols.contains(tilePosition!)){
-                tilePosition = Position(Int.random(in: 1..<SIZE-1), Int.random(in: 1..<SIZE-1))
-            }
-        }else{
-            tilePosition = extactPosition
+        while (tilePosition == nil || (blackHols.keys.filter{$0.y == tilePosition?.y}).capacity != 0) {
+            tilePosition = Position(row, Int.random(in: 0..<SIZE))
         }
         if let position = tilePosition{
-            let size = CGFloat(frame.size.width / CGFloat(SIZE) - 10)
-            let block = SKSpriteNode(color: UIColor.black, size: CGSize(width: size, height: size))
+            let size = CGFloat(frame.size.width / CGFloat(SIZE) - 20)
+            let block = SKSpriteNode(texture: SKTexture.init(imageNamed: "skull"), size: CGSize(width: size, height: size))
             block.position = grid!.gridPosition(row: position.x, col: position.y)
             grid?.addChild(block)
-                        
-            blackHols.insert(position)
+            blackHols[position] = block
         }
     }
     
@@ -416,8 +421,6 @@ class GameScene: SKScene, GameScenceControlDelegate {
         }))
         self.view?.window?.rootViewController?.present(alert, animated: true, completion: nil)
     }
-    
-    
 }
 
 
