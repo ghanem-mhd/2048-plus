@@ -27,7 +27,7 @@ class GameViewController: UIViewController, ARSessionDelegate {
     private var yHeadDelta: Float = 0.0
     
     var currentFaceAnchor: ARFaceAnchor?
-    var voiceControlDeleget: GameScenceControlDelegate? = nil
+    var voiceControlDeleget: GameSceneControlDelegate? = nil
     
     
     override func viewDidLoad() {

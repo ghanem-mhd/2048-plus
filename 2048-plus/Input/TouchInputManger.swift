@@ -17,9 +17,9 @@ class TouchInputManger{
     let swipeDownRec = UISwipeGestureRecognizer()
     
     var view: UIView
-    var controlDeleget: GameScenceControlDelegate
+    var controlDeleget: GameSceneControlDelegate
     
-    init (view: UIView, controlDeleget:GameScenceControlDelegate){
+    init (view: UIView, controlDeleget:GameSceneControlDelegate){
         self.view = view
         self.controlDeleget = controlDeleget
         setUpGestureRecognizers()
