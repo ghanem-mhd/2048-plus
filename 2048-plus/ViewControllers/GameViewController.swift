@@ -34,7 +34,7 @@ class GameViewController: UIViewController, ARSessionDelegate {
     private var yHeadDelta: Float = 0.0
     
     var currentFaceAnchor: ARFaceAnchor?
-    var voiceControlDeleget: GameSceneControlDelegate? = nil
+    var gameControlDeleget: GameSceneControlDelegate? = nil
     
     
     override func viewDidLoad() {
@@ -44,7 +44,7 @@ class GameViewController: UIViewController, ARSessionDelegate {
             return
         }
         let scene = GameScene(size: skview.bounds.size)
-        voiceControlDeleget = scene
+        gameControlDeleget = scene
         
         scene.backgroundColor = .clear
         
@@ -139,7 +139,7 @@ extension GameViewController: ARSKViewDelegate {
             // left
             print("left")
             if lastMove == "right" {
-                self.voiceControlDeleget!.shiftRight()
+                self.gameControlDeleget!.shiftRight()
                 lastMove = ""
                 print("shiftRight")
             } else {
@@ -149,7 +149,7 @@ extension GameViewController: ARSKViewDelegate {
             // right
             print("right")
             if lastMove == "left" {
-                self.voiceControlDeleget!.shiftLeft()
+                self.gameControlDeleget!.shiftLeft()
                 print("shiftLeft")
                 lastMove = ""
             } else {
@@ -159,7 +159,7 @@ extension GameViewController: ARSKViewDelegate {
             // up
             print("up")
             if lastMove == "down" {
-                self.voiceControlDeleget!.shiftDown()
+                self.gameControlDeleget!.shiftDown()
                 print("shiftDown")
                 lastMove = ""
             } else {
@@ -169,7 +169,7 @@ extension GameViewController: ARSKViewDelegate {
             // down
             print("down")
             if lastMove == "up" {
-                self.voiceControlDeleget!.shiftUp()
+                self.gameControlDeleget!.shiftUp()
                 print("shiftUp")
                 lastMove = ""
             } else {
