@@ -18,7 +18,7 @@ class GameViewController: UIViewController, ARSessionDelegate {
     private var deltaDelayCount = 0
     
     private var lastMove = ""
-    private var lastMoveDelay = 2
+    private var lastMoveDelay = 4
     private var noMoveCount = 0
     
     private var xHeadDelta: Float = 0.0
@@ -131,30 +131,44 @@ extension GameViewController: ARSKViewDelegate {
         
         if roundedXDelta < -0.1 {
             // left
+            print("left")
             if lastMove == "right" {
                 self.voiceControlDeleget!.shiftRight()
+                lastMove = ""
+                print("shiftRight")
+            } else {
+                lastMove = "left"
             }
-            lastMove = "left"
         } else if roundedXDelta > 0.1 {
             // right
+            print("right")
             if lastMove == "left" {
                 self.voiceControlDeleget!.shiftLeft()
+                print("shiftLeft")
+                lastMove = ""
+            } else {
+                lastMove = "right"
             }
-            lastMove = "right"
         } else if roundedYDelta < -0.1 {
             // up
             print("up")
             if lastMove == "down" {
                 self.voiceControlDeleget!.shiftDown()
+                print("shiftDown")
+                lastMove = ""
+            } else {
+                lastMove = "up"
             }
-            lastMove = "up"
         } else if roundedYDelta > 0.1 {
             // down
             print("down")
             if lastMove == "up" {
                 self.voiceControlDeleget!.shiftUp()
+                print("shiftUp")
+                lastMove = ""
+            } else {
+                lastMove = "down"
             }
-            lastMove = "down"
         } else {
             noMoveCount += 1
             if lastMoveDelay <= noMoveCount {
