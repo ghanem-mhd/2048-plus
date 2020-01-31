@@ -17,7 +17,7 @@
 		FCABEB7923B8359A0055A559 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCABEB7823B8359A0055A559 /* Colors.swift */; };
 		FCABEB7D23BE563E0055A559 /* Tile.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCABEB7C23BE563E0055A559 /* Tile.swift */; };
 		FCABEB7F23BE568B0055A559 /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCABEB7E23BE568B0055A559 /* Position.swift */; };
-		FCABEB8223BFF6160055A559 /* GameScenceControlDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCABEB8023BFEF7A0055A559 /* GameScenceControlDelegate.swift */; };
+		FCABEB8223BFF6160055A559 /* GameSceneControlDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCABEB8023BFEF7A0055A559 /* GameSceneControlDelegate.swift */; };
 		FCABEB8523BFF7830055A559 /* TouchInputManger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCABEB8423BFF7830055A559 /* TouchInputManger.swift */; };
 		FCABEB8723C0034B0055A559 /* VoiceInputManger.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCABEB8623C0034B0055A559 /* VoiceInputManger.swift */; };
 /* End PBXBuildFile section */
@@ -35,7 +35,7 @@
 		FCABEB7823B8359A0055A559 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		FCABEB7C23BE563E0055A559 /* Tile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tile.swift; sourceTree = "<group>"; };
 		FCABEB7E23BE568B0055A559 /* Position.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Position.swift; sourceTree = "<group>"; };
-		FCABEB8023BFEF7A0055A559 /* GameScenceControlDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScenceControlDelegate.swift; sourceTree = "<group>"; };
+		FCABEB8023BFEF7A0055A559 /* GameSceneControlDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneControlDelegate.swift; sourceTree = "<group>"; };
 		FCABEB8423BFF7830055A559 /* TouchInputManger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchInputManger.swift; sourceTree = "<group>"; };
 		FCABEB8623C0034B0055A559 /* VoiceInputManger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceInputManger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -103,7 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				FCABEB6023B828200055A559 /* GameScene.swift */,
-				FCABEB8023BFEF7A0055A559 /* GameScenceControlDelegate.swift */,
+				FCABEB8023BFEF7A0055A559 /* GameSceneControlDelegate.swift */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -216,7 +216,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FCABEB7F23BE568B0055A559 /* Position.swift in Sources */,
-				FCABEB8223BFF6160055A559 /* GameScenceControlDelegate.swift in Sources */,
+				FCABEB8223BFF6160055A559 /* GameSceneControlDelegate.swift in Sources */,
 				FCABEB6123B828200055A559 /* GameScene.swift in Sources */,
 				FCABEB8723C0034B0055A559 /* VoiceInputManger.swift in Sources */,
 				FCABEB7923B8359A0055A559 /* Colors.swift in Sources */,

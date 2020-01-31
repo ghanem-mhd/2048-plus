@@ -13,14 +13,21 @@ import Speech
 
 
 class GameViewController: UIViewController, ARSessionDelegate {
-        
+    
+    /** Head Tracking Helper Variables */
+    
+    // use "deltaDelay" frames to collect Head Data before processing Data
     private var deltaDelay = 20
     private var deltaDelayCount = 0
     
+    // saving last head move state
     private var lastMove = ""
+    
+    // forget last move after lastMoveDelay process cycles
     private var lastMoveDelay = 4
     private var noMoveCount = 0
     
+    // helper variables saving head position deltas
     private var xHeadDelta: Float = 0.0
     private var xHeadLast: Float = 0.0
     private var yHeadLast: Float = 0.0
@@ -51,6 +58,7 @@ class GameViewController: UIViewController, ARSessionDelegate {
     }
     
     func resetTracking() {
+        // boilerplate arkit code
         guard let skview = self.view as? ARSKView else{ return }
         guard ARFaceTrackingConfiguration.isSupported else { return }
         let configuration = ARFaceTrackingConfiguration()
@@ -84,6 +92,7 @@ class GameViewController: UIViewController, ARSessionDelegate {
     }
     
     func session(_ session: ARSession, didFailWithError error: Error) {
+        // ar error catching
         guard error is ARError else { return }
         
         let errorWithInfo = error as NSError
@@ -101,24 +110,19 @@ class GameViewController: UIViewController, ARSessionDelegate {
 }
 
 extension GameViewController: ARSKViewDelegate {
-        
-    func view(_ renderer: ARSKView, didAdd node: SKNode, for anchor: ARAnchor) {
-        guard let faceAnchor = anchor as? ARFaceAnchor else { return }
-        currentFaceAnchor = faceAnchor
-        
-        print(currentFaceAnchor!.transform)
-    }
     
     /// - Tag: ARFaceGeometryUpdate
     func view(_ renderer: ARSKView, didUpdate node: SKNode, for anchor: ARAnchor) {
         guard let faceAnchor = anchor as? ARFaceAnchor else { return }
         currentFaceAnchor = faceAnchor
         
+        // get relevant vector from head matrix
         let xHead = currentFaceAnchor!.transform[2, 0]
         let yHead = currentFaceAnchor!.transform[1, 2]
         
         deltaDelayCount += 1
         if (deltaDelayCount < deltaDelay) {
+            // collect data before processing it
             xHeadDelta += (xHead - xHeadLast)
             yHeadDelta += (yHead - yHeadLast)
             xHeadLast = xHead
@@ -126,9 +130,11 @@ extension GameViewController: ARSKViewDelegate {
             return
         }
         
+        // calculate head x and y delta over the last "deltaDelayCount" frames
         let roundedYDelta = Double(round(1000*yHeadDelta)/1000)
         let roundedXDelta = Double(round(1000*xHeadDelta)/1000)
         
+        // process moves if certain threshold has been reached
         if roundedXDelta < -0.1 {
             // left
             print("left")
@@ -170,6 +176,7 @@ extension GameViewController: ARSKViewDelegate {
                 lastMove = "down"
             }
         } else {
+            // in case the head did not move enough, we are counting how many frames the head did not move. After "noMoveCount" process cycles the last movement will decay
             noMoveCount += 1
             if lastMoveDelay <= noMoveCount {
                 lastMove = ""
@@ -177,6 +184,7 @@ extension GameViewController: ARSKViewDelegate {
             }
         }
         
+        // reset the helper variables
         deltaDelayCount = 0
         xHeadDelta = 0
         yHeadDelta = 0
