@@ -8,7 +8,8 @@
 
 import Foundation
 
-protocol GameScenceControlDelegate {
+// delegate to control the game scene
+protocol GameSceneControlDelegate {
     func shiftUp()
     func shiftDown()
     func shiftRight()

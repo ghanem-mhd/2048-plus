@@ -11,21 +11,24 @@ import CoreGraphics
 import Foundation
 import AudioToolbox
 
-class GameScene: SKScene, GameScenceControlDelegate {
+class GameScene: SKScene, GameSceneControlDelegate {
     
-    let blackholsEnabled = true
-    let reverse = false
-    let speedModeEnabled = false
-    
+    // boolean flag to enable and disable the death or black holes
+    let deathTrapEnabled = true
+    // size of the grid and duration of all the animation happening in the scene
     let SIZE = 5, DURATION = 0.08
-    
+    // global variable for the current score
     var currentScore = 0
-    
+    // the empty grid SKSpriteNode
     var grid:Grid? = nil
+    // score SKSpriteNode
     var scoreLabel:SKLabelNode? = nil
+    // dictionary for the tiles objects. Key is the position as string and value is the tile
     var tiles: [String:Tile] = [:]
+    // dictionary for the tiles SKSpriteNodes. Key is the position and value is the node
     var nodes: [Position:SKSpriteNode] = [:]
-    var blackHols: [Position:SKSpriteNode] = [:]
+    // dictionary for the tiles SKSpriteNodes. Key is the position and value is the node
+    var traps: [Position:SKSpriteNode] = [:]
     var touchInputManger: TouchInputManger? = nil
     
     override func didMove(to: SKView) {
@@ -33,18 +36,20 @@ class GameScene: SKScene, GameScenceControlDelegate {
         startGame()
     }
     
+    // function to render and start a new game
     func startGame(){
         fillTiles()
         createGrid()
         createScoreLabelNode()
-        if (blackholsEnabled){
+        if (deathTrapEnabled){
             generateBlackHoleTile(row:1)
             generateBlackHoleTile(row:3)
         }
-        generateTile(extactPosition: nil)
-        generateTile(extactPosition: nil)
+        generateTile(exactPosition: nil)
+        generateTile(exactPosition: nil)
     }
     
+    // genereate the grid node
     func createGrid(){
         let size = CGFloat(frame.size.width / CGFloat(SIZE) - 10)
         grid = Grid(blockSize: size, rows:SIZE, cols:SIZE)
@@ -52,6 +57,7 @@ class GameScene: SKScene, GameScenceControlDelegate {
         addChild(grid!)
     }
     
+    // generate tiles of the grid for every position
     func fillTiles(){
         for row in 0...SIZE-1{
             for column in 0...SIZE-1{
@@ -62,8 +68,9 @@ class GameScene: SKScene, GameScenceControlDelegate {
         }
     }
     
+    // move and animate one node from old position to new position
     func moveNode(oldPosition: Position,newPosition: Position, node: SKSpriteNode, status: NodeStatus) -> Bool{
-        if oldPosition == newPosition{ // the node is already on the boundery
+        if oldPosition == newPosition{ // the node is already on the boundary
             return false
         }
         if (status == NodeStatus.vanish){
@@ -72,10 +79,12 @@ class GameScene: SKScene, GameScenceControlDelegate {
             }
             node.run(SKAction.move(to: coordinate, duration: DURATION),completion: {
                 node.removeFromParent()
-                self.blackHols[newPosition]?.run(SKAction.sequence([SKAction.colorize(with: UIColor.red, colorBlendFactor: 1.0, duration: self.DURATION * 1.9),SKAction.colorize(with: UIColor.clear, colorBlendFactor: 0.0, duration: self.DURATION * 1.9)]))
+                // make the traps node glow into red then return to normal color
+                self.traps[newPosition]?.run(SKAction.sequence([SKAction.colorize(with: UIColor.red, colorBlendFactor: 1.0, duration: self.DURATION * 1.9),SKAction.colorize(with: UIColor.clear, colorBlendFactor: 0.0, duration: self.DURATION * 1.9)]))
+                // vibrate the device to give the user a feedback
                 AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
             })
-            self.nodes.removeValue(forKey: oldPosition)
+            //
             self.nodes.removeValue(forKey: oldPosition)
             return true
         }
@@ -84,6 +93,7 @@ class GameScene: SKScene, GameScenceControlDelegate {
             guard let coordinate = grid?.gridPosition(row: newPosition.x, col: newPosition.y) else {
                 return false
             }
+            // move the node from it's current position to the new position
             node.run(SKAction.move(to: coordinate, duration: DURATION))
             self.nodes.removeValue(forKey: oldPosition)
             self.nodes[newPosition] = node
@@ -93,9 +103,7 @@ class GameScene: SKScene, GameScenceControlDelegate {
         if (status == NodeStatus.merge){
             let bigNode = self.nodes[newPosition]
             
-            if bigNode == nil{
-                print("oldPosition \(oldPosition)")
-                print("newPosition \(newPosition)")
+            if bigNode == nil{// TODO
                 return false
             }
             
@@ -103,12 +111,15 @@ class GameScene: SKScene, GameScenceControlDelegate {
             self.nodes.removeValue(forKey: oldPosition)
             node.removeFromParent()
             
+            // get the label node inside the tile node
             let label = bigNode?.childNode(withName: "Label") as! SKLabelNode
+            // get the new value for the node
             let newValue = tiles[getKey(position: newPosition)]?.value
             label.text = "\(newValue!)"
-            
+            // change the colors according to the new value
             label.fontColor = Colors.tileText(value: newValue).color
             bigNode?.color = Colors.tile(value: newValue).color
+            // make scale animation
             bigNode?.run(SKAction.sequence([SKAction.scale(to: 1.3, duration: DURATION * 1.5),
                                            SKAction.scale(to: 1, duration: DURATION * 1.5)]))
             updateScore(score: newValue!)
@@ -117,7 +128,10 @@ class GameScene: SKScene, GameScenceControlDelegate {
         return false
     }
     
+    // handle the shift operations
     func handleShift(direction: MoveDirection){
+        // nodes have to be sorted before shifting
+        // the sorting is done according to the direction of shifting
         var sortedNodes:[(Position,SKSpriteNode)]? = nil
         switch direction {
             case MoveDirection.down:
@@ -130,16 +144,19 @@ class GameScene: SKScene, GameScenceControlDelegate {
                 sortedNodes = nodes.sorted{ $0.key.y < $1.key.y}
         }
         var oneNodeMoved = false
-        
+        // loop over all nodes and shift them
         for (position, node) in sortedNodes!{
+            // get the new position of the node and the status
             let (newPosition,status) = nextPositionV2(oldPosition: position, direction: direction)
+            // move the node to the new position
             let nodeHasMoved = moveNode(oldPosition: position,newPosition: newPosition, node: node, status:status)
             if nodeHasMoved{
                 oneNodeMoved = true
             }
         }
         if oneNodeMoved{
-            generateTile(extactPosition: nil)
+            // generate new tile at random position
+            generateTile(exactPosition: nil)
         }else{
             failedShiftingAnimation(to: direction)
             if nodes.values.count == SIZE * SIZE{
@@ -148,6 +165,8 @@ class GameScene: SKScene, GameScenceControlDelegate {
         }
     }
         
+    // determine the new position for an old position in the direction of movement
+    // return the new position and a status
     func nextPositionV2(oldPosition:Position, direction:MoveDirection) -> (Position,NodeStatus) {
         var newX:Int = oldPosition.x
         var newY:Int = oldPosition.y
@@ -157,8 +176,8 @@ class GameScene: SKScene, GameScenceControlDelegate {
         let valueToMove = tiles[getKey(position: oldPosition)]?.value
     
         if (direction == MoveDirection.up){
-            if (blackholsEnabled){
-                for blackhole in blackHols.keys{
+            if (deathTrapEnabled){
+                for blackhole in traps.keys{
                     if (blackhole.y == oldPosition.y && blackhole.x < oldPosition.x){
                         status = NodeStatus.vanish
                         let value = tiles[getKey(position: oldPosition)]?.value
@@ -184,8 +203,8 @@ class GameScene: SKScene, GameScenceControlDelegate {
         }
         
         if (direction == MoveDirection.down){
-            if (blackholsEnabled){
-                for blackhole in blackHols.keys{
+            if (deathTrapEnabled){
+                for blackhole in traps.keys{
                     if (blackhole.y == oldPosition.y && blackhole.x > oldPosition.x){
                         status = NodeStatus.vanish
                         let value = tiles[getKey(position: oldPosition)]?.value
@@ -211,8 +230,8 @@ class GameScene: SKScene, GameScenceControlDelegate {
         }
         
         if (direction == MoveDirection.right){
-            if (blackholsEnabled){
-                for blackhole in blackHols.keys{
+            if (deathTrapEnabled){
+                for blackhole in traps.keys{
                     if (blackhole.x == oldPosition.x && blackhole.y > oldPosition.y){
                         status = NodeStatus.vanish
                         let value = tiles[getKey(position: oldPosition)]?.value
@@ -238,8 +257,8 @@ class GameScene: SKScene, GameScenceControlDelegate {
         }
         
         if (direction == MoveDirection.left){
-            if (blackholsEnabled){
-                for blackhole in blackHols.keys{
+            if (deathTrapEnabled){
+                for blackhole in traps.keys{
                     if (blackhole.x == oldPosition.x && blackhole.y < oldPosition.y){
                         status = NodeStatus.vanish
                         let value = tiles[getKey(position: oldPosition)]?.value
@@ -266,6 +285,7 @@ class GameScene: SKScene, GameScenceControlDelegate {
         return (Position(newX, newY), status)
     }
     
+    // get random empty position
     func randomPosition() -> Position? {
         let tilesArray = Array(tiles.values)
         let emptyTiles = tilesArray.filter({$0.value == nil})
@@ -273,19 +293,20 @@ class GameScene: SKScene, GameScenceControlDelegate {
             return nil
         }else{
             var emptyPosition: Position?
-            while (emptyPosition == nil || blackHols.keys.contains(emptyPosition!)) {
+            while (emptyPosition == nil || traps.keys.contains(emptyPosition!)) {
                 emptyPosition = emptyTiles[Int(arc4random_uniform(UInt32(emptyTiles.count)))].position
             }
             return emptyPosition
         }
     }
     
-    func generateTile(extactPosition: Position?){
+    // generate tile node in the given position or in a random empty position
+    func generateTile(exactPosition: Position?){
         var tilePosition:Position? = nil
-        if extactPosition == nil{
+        if exactPosition == nil{
             tilePosition = randomPosition()
         }else{
-            tilePosition = extactPosition
+            tilePosition = exactPosition
         }
         if let position = tilePosition{
             let size = CGFloat(frame.size.width / CGFloat(SIZE)  - 15)
@@ -298,7 +319,7 @@ class GameScene: SKScene, GameScenceControlDelegate {
             label.name = "Label"
             label.fontName = "AvenirNext-Bold"
             label.text = "2"
-            label.fontSize = 25
+            label.fontSize = 30
             label.horizontalAlignmentMode = .center
             label.verticalAlignmentMode = .center
             label.fontColor = Colors.tileText(value: 2).color
@@ -312,9 +333,10 @@ class GameScene: SKScene, GameScenceControlDelegate {
         }
     }
     
+    // generate death trap node randomly in the given row
     func generateBlackHoleTile(row: Int){
         var tilePosition:Position? = nil
-        while (tilePosition == nil || (blackHols.keys.filter{$0.y == tilePosition?.y}).capacity != 0) {
+        while (tilePosition == nil || (traps.keys.filter{$0.y == tilePosition?.y}).capacity != 0) {
             tilePosition = Position(row, Int.random(in: 0..<SIZE))
         }
         if let position = tilePosition{
@@ -322,7 +344,7 @@ class GameScene: SKScene, GameScenceControlDelegate {
             let block = SKSpriteNode(texture: SKTexture.init(imageNamed: "skull"), size: CGSize(width: size, height: size))
             block.position = grid!.gridPosition(row: position.x, col: position.y)
             grid?.addChild(block)
-            blackHols[position] = block
+            traps[position] = block
         }
     }
     
@@ -354,11 +376,15 @@ class GameScene: SKScene, GameScenceControlDelegate {
     }
     
     enum NodeStatus{
+        // vanish status: the node will be disappeared
+        // move   status: move the node from one position into other
+        // merge  status: merge one node into another
         case merge
         case vanish
         case move
     }
     
+    // create score node
     func createScoreLabelNode(){
         let margin = self.size.height * 0.1
         let size   = self.size.width * 0.20
@@ -387,7 +413,7 @@ class GameScene: SKScene, GameScenceControlDelegate {
         scoreLabel?.text = "Score: \(currentScore)"
     }
     
-    
+    // animate all nodes opposite to the direction of movement to give the user a feedback
     func failedShiftingAnimation(to direction: MoveDirection) {
         let delta: CGFloat = 30
         var deltaPoint: CGPoint {
@@ -409,13 +435,17 @@ class GameScene: SKScene, GameScenceControlDelegate {
         }
     }
     
+    // clear all nodes from the scene
     func clearGameBoard(){
         self.removeAllChildren()
     }
     
+    
+    // show popup in case the user lost
     func userDidLost() {
         let alert = UIAlertController(title: "You've Lost", message: "Good luck next time!", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Restart", style: .default, handler: { _ in
+            self.currentScore = 0
             self.clearGameBoard()
             self.startGame()
         }))

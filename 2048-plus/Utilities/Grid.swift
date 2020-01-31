@@ -57,6 +57,7 @@ class Grid:SKSpriteNode {
         return SKTexture(image: image!)
     }
 
+    // get the x,y coordinations of a position defined by i,j of the grid
     func gridPosition(row:Int, col:Int) -> CGPoint {
     
         let offset = blockSize / 2.0 + 0.5
